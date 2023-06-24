@@ -16,25 +16,24 @@ h1 {
   font-family: cursive;
 }
 
-#container>div:nth-child(1){
+#container>div:nth-child(1) {
   margin-top: 2em;
   display: flex;
   justify-content: space-around;
 }
 
 
-#timer,#reset {
-  padding: 1rem;
-  margin: .5rem;
-  border: 1px solid gray;
+
+#reset {
+  padding: 0.5rem 1rem;
+  border: 2px solid red;
   border-radius: 5px;
   width: fit-content;
-  font-weight: 600;
-}
-
-#reset{
-  background: #27374d;
-  color:#fff;
+  background-color: #fff;
+  color: red;
+  margin-bottom: -10px;
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
 #source_container {
@@ -101,6 +100,7 @@ input[type='submit'] {
   background: #8696FE;
   color: #fff;
   border: none;
+
 }
 
 .text-editor {
@@ -119,15 +119,38 @@ input[type='submit'] {
   display: none;
 }
 
-.accuracy-wpm {
-  width: 50%;
-  margin: auto;
+.aside {
   display: flex;
-  justify-content: space-around;
-  font-weight: 600;
+  flex-direction: column;
+  position: absolute;
+  top: 30%;
+  left: 10;
+  gap: 2rem;
+}
+
+.aside>div {
+  width: 200px;
+  height: 200px;
+  border: .6px solid rgb(218, 213, 213);
+  text-align: center;
+  gap: 1rem;
+  padding-top: 1rem;
+}
+
+.aside>div>p {
+  padding-top: 20%;
+  font-size: 3rem;
 }
 
 
+.aside-right {
+
+  right: 5%;
+}
+
+#timer {
+  font-size: 2.5rem;
+}
 
 .wrong-key {
   background-color: #f24753;
@@ -158,6 +181,24 @@ input[type='submit'] {
     padding: .5em;
     border-radius: 5px;
   }
+
+  .aside {
+    font-size: 1rem;
+  }
+
+  .aside>div {
+    width: 20px;
+    height: 20px;
+    padding-top: 0.5rem;
+  }
+
+  .aside>div>p {
+    font-size: 1rem;
+  }
+
+  #timer {
+    font-size: 1rem;
+  }
 }
 
 
@@ -176,5 +217,82 @@ input[type='submit'] {
     width: 40%;
     padding: .5em;
     border-radius: 5px;
+  }
+}
+
+@media only screen and (max-width:1172px) {
+
+
+
+  .aside>div {
+    width: 150px;
+    height: 150px;
+    padding-top: 0.8rem;
+  }
+
+  .aside>div>p {
+    padding-top: 15%;
+    font-size: 2rem;
+  }
+
+  #timer {
+    font-size: 2rem;
+  }
+}
+
+@media only screen and (max-width:900px) {
+
+
+
+  .aside>div {
+    width: 100px;
+    height: 100px;
+    padding-top: 0.8rem;
+  }
+
+  .aside>div>p {
+    padding-top: 15%;
+    font-size: 1.3rem;
+  }
+
+  #timer {
+    font-size: 1.3rem;
+  }
+}
+
+
+@media only screen and (max-width:600px) {
+
+  .aside-left {
+    position: relative;
+    bottom: 0;
+    flex-direction: row;
+  }
+
+  .aside {
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .aside>div {
+    width: 100px;
+    height: 100px;
+    padding-top: 0.8rem;
+  }
+
+  .aside>div>p {
+    padding-top: 15%;
+    font-size: 1.3rem;
+  }
+
+  .aside-right {
+    position: relative;
+    right: 0px;
+    flex-direction: row;
+  }
+
+  #timer {
+    font-size: 1.3rem;
   }
 }

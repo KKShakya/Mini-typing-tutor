@@ -23,12 +23,13 @@ import './home.css'
 
 
 const Home = () => {
- 
-  
+
+
   //root to build visualText
-  const letters = ['a', 's', 'd', 'f', 'j', 'k', 'l'];
-  
-  
+  const letters =
+    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+
+
   //WPM checks for Words per minute
   // current index checks for the visual text and typed text character matching
   //correctChar Char checks for the length of correct user input
@@ -49,7 +50,9 @@ const Home = () => {
 
   //update length of words
   const handleSource = (e) => {
-    dispatch(updateSource(e.target.value))
+    dispatch(updateSource(e.target.value));
+
+
   }
 
 
@@ -59,9 +62,9 @@ const Home = () => {
     let finishSound = document.querySelector('#finish-audio');
     //Wpm dividing total typed Characters with 5 
     //as it is 5 minute window and also we have 300 seonds
-    let wpm = Math.abs(Math.round(totalTypedChar / 5));
+    let wpm = Math.abs(Math.round((totalTypedChar / 5)));
 
-    let acc = totalTypedChar == 0 ? 0 : (correctChar / totalTypedChar) * 100;
+    let acc = totalTypedChar === 0 ? 0 : (correctChar / totalTypedChar) * 100;
 
     //wpm , accuracy  and Index set to desired values
     setWPM(wpm);
@@ -69,10 +72,13 @@ const Home = () => {
     setChar(0)
     setCorrect(0)
 
-    if (totalTypedChar !== 0) {
+
+    // the timing has finished
+    if(finishSound){
 
       finishSound.play();
     }
+
   }
 
 
@@ -80,6 +86,7 @@ const Home = () => {
   //function to capture the keys pressed on keyborad through window event listener
   const handleKeyDown = (e) => {
 
+    setChar(prev => prev + 1);
 
     let clickAudio = document.querySelector('#click-audio');
     let wrongKey = document.querySelector('#clack-audio');
@@ -88,7 +95,6 @@ const Home = () => {
     const currentKey = visualText[currentIndex];
 
     let textArea = document.querySelector('#tex')
-    setChar((prev) => prev + 1);
 
     if (key === currentKey) {
 
@@ -109,6 +115,28 @@ const Home = () => {
       wrongKey.play();
     }
   };
+
+
+  const handleReset = () => {
+
+    dispatch(resetStartTime(20));
+    dispatch(updateCombination());
+    dispatch(updateRepetition());
+    dispatch(updateSource());
+
+    setWPM(0);
+    setAccuracy(0);
+    setChar(0);
+    setCorrect(0);
+    setCurrentIndex(0);
+
+    let textArea = document.querySelector('#tex');
+    textArea.value = "";
+    textArea.classList.remove('wrong-key')
+    textArea.focus();
+
+  }
+
 
 
 
@@ -168,14 +196,22 @@ const Home = () => {
 
     if (startTime === 0) {
       handleWPMandAccuracy();
+      dispatch(resetStartTime(0));
+      clearInterval(timer)
     }
 
     // Timer logic for 5 minutes
     timer = setInterval(() => {
-
+      
       dispatch(updateMinutes(Math.floor(startTime / 60)));
       dispatch(updateSeconds(startTime % 60));
       dispatch(resetStartTime(startTime - 1))
+      
+      if(startTime === 0){
+        clearInterval(timer);
+        dispatch(resetStartTime(0));
+       return;
+      }
 
     }, 1000);
 
@@ -184,24 +220,19 @@ const Home = () => {
 
   }, [startTime])
 
-
-
-
+window.addEventListener('beforeunload',(e)=>{console.log(e)})
   // Skeleton of the body starts form here
   return (
     <div>
       {/* coantiner for all */}
 
 
-        <h1>Typing Tutor</h1>
+      <h1>Typing Tutor</h1>
       {/* conatiner of source and typing */}
       <div id="container">
+        <button id='reset' onClick={handleReset}>Reset</button>
 
 
-        <div>
-          <p id="timer">00:0{minutes}:{seconds == 0 ? '0' : ''}{seconds}</p>
-          <button id='reset' onClick={()=>dispatch(resetStartTime(300))}>Reset</button>
-        </div>
 
 
         {/* div to genrate the text for typing, */}
@@ -209,7 +240,7 @@ const Home = () => {
           <div >
             <h4>Source</h4>
             <div>
-              <input type="radio" name="Source" value={2} onChange={handleSource} selected />
+              <input type="radio" name="Source" value={2} onChange={handleSource} defaultChecked />
               <p>2 Words</p>
             </div>
             <div>
@@ -244,9 +275,16 @@ const Home = () => {
 
         </div>
 
-        <div className='accuracy-wpm'>
-          <div >Accuracy {" : "} {accuracy}%</div>
-          <div>WPM {" : "} {WPM}</div>
+        <div className='aside aside-left'>
+          <div >Accuracy<p> {accuracy}</p></div>
+          <div>WPM<p> {accuracy}</p></div>
+        </div>
+
+
+        <div className='aside aside-right'>
+          <div>Timer<p id="timer">00:0{minutes}:{seconds == 0 ? '0' : ''}{seconds}</p></div>
+          <div>Errors<p>{totalTypedChar - correctChar}</p></div>
+
         </div>
 
       </div>
