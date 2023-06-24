@@ -22,7 +22,7 @@ const initialState = {
   combination: 2,
   repetition: 3,
   next: false,
-  startTime: 30,
+  startTime: 300,
   minutes:"",
   seconds:"",
 }

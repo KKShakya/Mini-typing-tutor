@@ -69,8 +69,7 @@ const Home = () => {
     //wpm , accuracy  and Index set to desired values
     setWPM(wpm);
     setAccuracy(acc.toFixed(0));
-    setChar(0)
-    setCorrect(0)
+    
 
 
     // the timing has finished
@@ -119,7 +118,7 @@ const Home = () => {
 
   const handleReset = () => {
 
-    dispatch(resetStartTime(20));
+    dispatch(resetStartTime(300));
     dispatch(updateCombination());
     dispatch(updateRepetition());
     dispatch(updateSource());
@@ -277,7 +276,7 @@ window.addEventListener('beforeunload',(e)=>{console.log(e)})
 
         <div className='aside aside-left'>
           <div >Accuracy<p> {accuracy}</p></div>
-          <div>WPM<p> {accuracy}</p></div>
+          <div>WPM<p> {WPM}</p></div>
         </div>
 
 
