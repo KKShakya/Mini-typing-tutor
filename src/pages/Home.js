@@ -121,7 +121,7 @@ const Home = () => {
     dispatch(resetStartTime(300));
     dispatch(updateCombination());
     dispatch(updateRepetition());
-    dispatch(updateSource());
+    dispatch(updateSource(2));
 
     setWPM(0);
     setAccuracy(0);
