@@ -18,6 +18,7 @@ import ding from '../assets/media/ding.wav'
 import clack from '../assets/media/clack.mp3'
 
 import './home.css'
+import { getNextKeyDef } from '@testing-library/user-event/dist/keyboard/getNextKeyDef';
 
 
 
@@ -46,13 +47,12 @@ const Home = () => {
   // redux useCase connections
   const { n, combination, repetition, visualText, next, startTime, minutes, seconds } = useSelector((store) => store)
   const dispatch = useDispatch();
-
+  console.log(n,repetition,next)
 
   //update length of words
   const handleSource = (e) => {
+    console.log(typeof e.target.value)
     dispatch(updateSource(e.target.value));
-
-
   }
 
 
@@ -69,11 +69,11 @@ const Home = () => {
     //wpm , accuracy  and Index set to desired values
     setWPM(wpm);
     setAccuracy(acc.toFixed(0));
-    
+
 
 
     // the timing has finished
-    if(finishSound){
+    if (finishSound) {
 
       finishSound.play();
     }
@@ -121,7 +121,7 @@ const Home = () => {
     dispatch(resetStartTime(300));
     dispatch(updateCombination());
     dispatch(updateRepetition());
-    dispatch(updateSource(2));
+    dispatch(updateSource());
 
     setWPM(0);
     setAccuracy(0);
@@ -156,6 +156,7 @@ const Home = () => {
     window.addEventListener('load', () => {
       document.querySelector('#tex').focus();
     })
+    console.log(n,repetition)
 
     return () => {
       window.addEventListener('load', () => {
@@ -201,15 +202,15 @@ const Home = () => {
 
     // Timer logic for 5 minutes
     timer = setInterval(() => {
-      
+
       dispatch(updateMinutes(Math.floor(startTime / 60)));
       dispatch(updateSeconds(startTime % 60));
       dispatch(resetStartTime(startTime - 1))
-      
-      if(startTime === 0){
+
+      if (startTime === 0) {
         clearInterval(timer);
         dispatch(resetStartTime(0));
-       return;
+        return;
       }
 
     }, 1000);
@@ -219,7 +220,7 @@ const Home = () => {
 
   }, [startTime])
 
-window.addEventListener('beforeunload',(e)=>{console.log(e)})
+  window.addEventListener('beforeunload', (e) => { console.log(e) })
   // Skeleton of the body starts form here
   return (
     <div>
@@ -239,15 +240,15 @@ window.addEventListener('beforeunload',(e)=>{console.log(e)})
           <div >
             <h4>Source</h4>
             <div>
-              <input type="radio" name="Source" value={2} onChange={handleSource} defaultChecked />
+              <input type="radio" name="Source" value={2} onChange={handleSource} checked={n===2} />
               <p>2 Words</p>
             </div>
             <div>
-              <input type="radio" name="Source" value={3} onChange={handleSource} />
+              <input type="radio" name="Source" value={3} onChange={handleSource} checked={n===3}/>
               <p>3 Words</p>
             </div>
             <div>
-              <input type="radio" name="Source" value={4} onChange={handleSource} />
+              <input type="radio" name="Source" value={4} onChange={handleSource} checked={n===4}/>
               <p>4 Words</p>
             </div>
           </div>
