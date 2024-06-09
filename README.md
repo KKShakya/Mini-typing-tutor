@@ -1,98 +1,52 @@
-# Getting Started with Create React App
+# Typing Tutor App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a typing tutor application designed to improve typing speed and accuracy.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Words per Minute (WPM) Calculation:** Tracks the user's typing speed in words per minute.
+- **Accuracy Calculation:** Measures the accuracy of the user's typing.
+- **Visual Text Display:** Displays the text for the user to type.
+- **Timer:** Counts down from 5 minutes, providing a time limit for typing sessions.
+- **Error Feedback:** Provides sound feedback for correct and incorrect keystrokes.
+- **Dynamic Word Generation:** Generates text dynamically based on user-selected options.
+- **Reset Functionality:** Allows users to reset the typing session and start over.
 
-### `npm start`
+## Variable Naming
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- visualText: Manages the text displayed for the user to type.
+- combination: Controls the number of words to be included.
+- repetition: Determines the repetition of word combinations.
+- WPM: Tracks the user's words per minute typing speed.
+- accuracy: Calculates the accuracy of the user's typing.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Screenshots
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+![Screenshot 1](src\assets\image1.png)  
 
 
-## Deployed Link : https://typingtutor-kkshakya.vercel.app/
+![Screenshot 2](src\assets\image1.png)  
+
+![Screenshot 3](src\assets\image3.png)  
 
 
-# Variables naming
+...
 
--- most of the states managed by redux store
+## Getting Started
 
-### Redux
+1. Clone the repository.
+2. Install dependencies using npm install.
+3. Start the development server using npm start.
+4. Open http://localhost:3000 to view the app in your browser.
 
-1. visualText is for User view What to type
+## Usage
 
-2. combinations is to derive how many words to be included
+1. Adjust the number of words to type.
+2. Customize combination and repetition settings.
+3. Begin typing in the text area.
+4. Track your typing speed, accuracy, and session time.
+5. Reset the session if needed.
 
-3. repitition is to repeat those combinations
+## Contributors
 
-4. next is to set new visualText once user finishes all the text correctly
-
-5. startTimer = 300 seconds === 5 minutes
-
-6. minutes and seconds are timer related updations
-
-7. n is the length of words
-
-
- </br>
- </br>
-
-### useState
-
-1. WPM checks for Words per minute
-
-2. current index checks for the visual text and typed text character matching
-
-3. correctChar Char checks for the length of correct user input
-
-4. totalTyped Char checks for the length of total user input, to calulate WPM typed
-
-
- </br>
- </br>
-
-### App working
-
-1. The app loads and the timer starts with foucs on the typing area textbox;
-
-2. As the user types in the sounds are managed for correct and wrong keys with background changes to red;
-
-3. User can reset the timer, change number of words from source, generate multiple combinations and repetitions.
-
- </br>
- </br>
-
-
-## screenshots
-
-![Home page Image]()
+- Krishna Kumar Shakya - Developer
