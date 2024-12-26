@@ -19,12 +19,12 @@ import clack from '../assets/media/clack.mp3'
 
 import './home.css'
 import { getNextKeyDef } from '@testing-library/user-event/dist/keyboard/getNextKeyDef';
-
+import { useTheme } from '../context/ThemeContext';
 
 
 
 const Home = () => {
-
+  const { isDarkMode, toggleTheme } = useTheme();
 
   //root to build visualText
   const letters =
@@ -57,6 +57,7 @@ const Home = () => {
 
 
 
+
   const handleWPMandAccuracy = () => {
 
     let finishSound = document.querySelector('#finish-audio');
@@ -79,6 +80,7 @@ const Home = () => {
     }
 
   }
+
 
 
 
@@ -142,7 +144,6 @@ const Home = () => {
   //this useEffect handles only words generation
 
   useEffect(() => {
-
 
     const result = genWordlist(n, letters)
     const text = shuffleArray(result, combination)
@@ -223,77 +224,96 @@ const Home = () => {
   window.addEventListener('beforeunload', (e) => { console.log(e) })
   // Skeleton of the body starts form here
   return (
-    <div>
-      {/* coantiner for all */}
+    <div className={`app ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
+      <button onClick={toggleTheme} className="theme-toggle">
+        {isDarkMode ? '🌞' : '🌙'}
+      </button>
 
-
-      <h1>Typing Tutor</h1>
-      {/* conatiner of source and typing */}
-      <div id="container">
-        <button id='reset' onClick={handleReset}>Reset</button>
-
-
-
-
-        {/* div to genrate the text for typing, */}
-        <div id="source_container">
-          <div >
-            <h4>Source</h4>
-            <div>
-              <input type="radio" name="Source" value={2} onChange={handleSource} checked={n===2} />
-              <p>2 Words</p>
-            </div>
-            <div>
-              <input type="radio" name="Source" value={3} onChange={handleSource} checked={n===3}/>
-              <p>3 Words</p>
-            </div>
-            <div>
-              <input type="radio" name="Source" value={4} onChange={handleSource} checked={n===4}/>
-              <p>4 Words</p>
-            </div>
-          </div>
-          {/* generator allow combination and repetiotion */}
-
-          <div className='generator'>
-            <h4>Generator</h4>
-            <div>
-              <p>Combination</p>
-              <input type="number" maxLength={1} value={combination} onChange={(e) => dispatch(updateCombination(e.target.value))} disabled={combination >= 20} />
-            </div>
-            <div>
-              <p>Repetition</p>
-              <input type="number" maxLength={1} value={repetition} onChange={(e) => dispatch(updateRepetition(e.target.value))} />
-            </div>
-          </div>
+      {/* Left stats section */}
+      <div className="stats-wrapper">
+        <div className="stat-box">
+          <div className="stat-label">WPM</div>
+          <div className="stat-value">{WPM}</div>
         </div>
-
-
-        {/* conatiner for visual and typing text */}
-        <div id="text_container">
-          <textarea name="visual_text" className="text-editor" disabled value={visualText}></textarea>
-          <textarea name="typing_text" className='text-editor' id="tex"></textarea>
-
+        <div className="stat-box">
+          <div className="stat-label">Accuracy</div>
+          <div className="stat-value">{accuracy}%</div>
         </div>
-
-        <div className='aside aside-left'>
-          <div >Accuracy<p> {accuracy}</p></div>
-          <div>WPM<p> {WPM}</p></div>
-        </div>
-
-
-        <div className='aside aside-right'>
-          <div>Timer<p id="timer">00:0{minutes}:{seconds == 0 ? '0' : ''}{seconds}</p></div>
-          <div>Errors<p>{totalTypedChar - correctChar}</p></div>
-
-        </div>
-
       </div>
 
-      {/* audios for different occasion
-        click => for every key typed
-        clack => every wrong key
-        ding for every session  5 minutes
-      */}
+      {/* Right stats section */}
+      <div className="right-stats-wrapper">
+        <div className="stat-box">
+          <div className="stat-label">Time</div>
+          <div className="stat-value">{minutes}:{seconds < 10 ? `0${seconds}` : seconds}</div>
+        </div>
+        <div className="stat-box">
+          <div className="stat-label">Errors</div>
+          <div className="stat-value">{totalTypedChar - correctChar}</div>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="main-content">
+        <div id="container">
+          <h1>Typing Tutor</h1>
+          <button id='reset' onClick={handleReset}>Reset</button>
+
+          {/* div to generate the text for typing */}
+          <div id="source_container">
+            <div >
+              <h4>Source</h4>
+              <div>
+                <input type="radio" name="Source" value={2} onChange={handleSource} checked={n===2} />
+                <p>2 Words</p>
+              </div>
+              <div>
+                <input type="radio" name="Source" value={3} onChange={handleSource} checked={n===3}/>
+                <p>3 Words</p>
+              </div>
+              <div>
+                <input type="radio" name="Source" value={4} onChange={handleSource} checked={n===4}/>
+                <p>4 Words</p>
+              </div>
+            </div>
+            {/* generator allow combination and repetiotion */}
+
+            <div className='generator'>
+              <h4>Generator</h4>
+              <div>
+                <p>Combination</p>
+                <input type="number" maxLength={1} value={combination} onChange={(e) => dispatch(updateCombination(e.target.value))} disabled={combination >= 20} />
+              </div>
+              <div>
+                <p>Repetition</p>
+                <input type="number" maxLength={1} value={repetition} onChange={(e) => dispatch(updateRepetition(e.target.value))} />
+              </div>
+            </div>
+          </div>
+
+          {/* container for visual and typing text */}
+          <div id="text_container">
+            <textarea 
+              name="visual_text" 
+              className="text-editor" 
+              disabled 
+              value={visualText}
+            ></textarea>
+            <div className="typing-area">
+              <textarea 
+                name="typing_text" 
+                className='text-editor' 
+                id="tex"
+                placeholder="Start typing here..."
+              ></textarea>
+              <div className="typing-indicator">
+                <span className="typing-cursor">|</span>
+                
+          </div>
+        </div>
+      </div>
+
+      {/* audios for different occasion */}
       <audio id="click-audio">
         <source src={Click} type="audio/mpeg" />
       </audio>
