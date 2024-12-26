@@ -1,0 +1,119 @@
+/* Keyboard styles */
+.keyboard-container {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--secondary-dark);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.light-mode .keyboard-container {
+  background: var(--secondary-light);
+  box-shadow: 0 4px 12px var(--shadow-light);
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  user-select: none;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.key {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-dark);
+  border-radius: 6px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-dark);
+}
+
+.light-mode .key {
+  background: var(--primary-light);
+  border: 1px solid var(--border-light);
+}
+
+.key:hover {
+  transform: translateY(1px);
+  opacity: 0.9;
+}
+
+.key:active, 
+.key.highlighted {
+  transform: translateY(2px);
+  background: var(--accent-dark);
+  color: var(--primary-dark);
+  box-shadow: 0 0 12px var(--accent-dark);
+}
+
+.light-mode .key:active,
+.light-mode .key.highlighted {
+  background: var(--accent-light);
+  color: var(--primary-light);
+  box-shadow: 0 0 12px var(--accent-light);
+}
+
+.space-key {
+  width: 200px;
+}
+
+.spacer {
+  width: 40px;
+}
+
+.spacer-half {
+  width: 20px;
+}
+
+/* Responsive keyboard */
+@media only screen and (max-width: 768px) {
+  .key {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+
+  .space-key {
+    width: 160px;
+  }
+
+  .spacer {
+    width: 32px;
+  }
+
+  .spacer-half {
+    width: 16px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .key {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+  }
+
+  .space-key {
+    width: 120px;
+  }
+
+  .spacer {
+    width: 28px;
+  }
+
+  .spacer-half {
+    width: 14px;
+  }
+}
