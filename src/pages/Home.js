@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+import Keyboard from '../components/Keyboard';
 
 import {
   resetStartTime,
@@ -9,7 +10,11 @@ import {
   updateSource,
   updateVisualText,
   updateMinutes,
-  updateSeconds
+  updateSeconds,
+  generateTwoWords,
+  generateThreeWords,
+  generateFourWords,
+  generateFiveWords
 } from '../redux/typingReducer';
 import { genWordlist, shuffleArray, repeat } from '../components/HomehelperFunctions';
 
@@ -21,15 +26,12 @@ import './home.css'
 import { getNextKeyDef } from '@testing-library/user-event/dist/keyboard/getNextKeyDef';
 import { useTheme } from '../context/ThemeContext';
 
-
-
 const Home = () => {
   const { isDarkMode, toggleTheme } = useTheme();
 
   //root to build visualText
   const letters =
     ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-
 
   //WPM checks for Words per minute
   // current index checks for the visual text and typed text character matching
@@ -43,11 +45,13 @@ const Home = () => {
   const [totalTypedChar, setChar] = useState(0);
   const [accuracy, setAccuracy] = useState(0);
 
+  // Add state for timer input
+  const [timerInput, setTimerInput] = useState(5);
 
   // redux useCase connections
   const { n, combination, repetition, visualText, next, startTime, minutes, seconds } = useSelector((store) => store)
   const dispatch = useDispatch();
-  console.log(n,repetition,next)
+  console.log(n, repetition, next)
 
   //update length of words
   const handleSource = (e) => {
@@ -55,72 +59,58 @@ const Home = () => {
     dispatch(updateSource(e.target.value));
   }
 
-
-
+  // Audio elements ref
+  const clickAudioRef = useRef(null);
+  const wrongKeyRef = useRef(null);
+  const finishAudioRef = useRef(null);
 
   const handleWPMandAccuracy = () => {
-
-    let finishSound = document.querySelector('#finish-audio');
-    //Wpm dividing total typed Characters with 5 
-    //as it is 5 minute window and also we have 300 seonds
-    let wpm = Math.abs(Math.round((totalTypedChar / 5)));
-
+    //Wpm dividing total typed Characters with timerInput 
+    //as it is a variable time window
+    let wpm = Math.abs(Math.round((totalTypedChar / timerInput)));
     let acc = totalTypedChar === 0 ? 0 : (correctChar / totalTypedChar) * 100;
 
-    //wpm , accuracy  and Index set to desired values
     setWPM(wpm);
     setAccuracy(acc.toFixed(0));
 
-
-
-    // the timing has finished
-    if (finishSound) {
-
-      finishSound.play();
+    if (finishAudioRef.current) {
+      finishAudioRef.current.play().catch(e => console.log('Audio play failed:', e));
     }
-
   }
 
-
-
-
-  //function to capture the keys pressed on keyborad through window event listener
-  const handleKeyDown = (e) => {
+  // Function to handle key press
+  const handleKeyPress = (pressedKey) => {
+    if (currentIndex >= visualText.length) return;
+    
+    // Only process if it's a valid key (letter or space)
+    const validKey = pressedKey === ' ' || /^[a-zA-Z]$/.test(pressedKey);
+    if (!validKey) return;
 
     setChar(prev => prev + 1);
-
-    let clickAudio = document.querySelector('#click-audio');
-    let wrongKey = document.querySelector('#clack-audio');
-
-    const { key } = e;
     const currentKey = visualText[currentIndex];
 
-    let textArea = document.querySelector('#tex')
-
-    if (key === currentKey) {
-
-      clickAudio.play();
-      setCorrect(correct => correct + 1)
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-
-      if (currentIndex + 1 === visualText.length) {
-        dispatch(updateNext(next));
-
+    if (pressedKey.toLowerCase() === currentKey.toLowerCase()) {
+      if (clickAudioRef.current) {
+        clickAudioRef.current.currentTime = 0;
+        clickAudioRef.current.play().catch(e => console.log('Audio play failed:', e));
       }
-      textArea.classList.remove('wrong-key');
-    }
-    else {
-
-      textArea.classList.add('wrong-key')
-
-      wrongKey.play();
+      setCorrect(correct => correct + 1);
+      setCurrentIndex(prev => prev + 1);
+      
+      // When text is finished, just generate new text without resetting stats
+      if (currentIndex === visualText.length - 1) {
+        dispatch(updateNext(next));
+      }
+    } else {
+      if (wrongKeyRef.current) {
+        wrongKeyRef.current.currentTime = 0;
+        wrongKeyRef.current.play().catch(e => console.log('Audio play failed:', e));
+      }
     }
   };
 
-
   const handleReset = () => {
-
-    dispatch(resetStartTime(300));
+    dispatch(resetStartTime(timerInput * 60));
     dispatch(updateCombination());
     dispatch(updateRepetition());
     dispatch(updateSource());
@@ -130,95 +120,79 @@ const Home = () => {
     setChar(0);
     setCorrect(0);
     setCurrentIndex(0);
-
-    let textArea = document.querySelector('#tex');
-    textArea.value = "";
-    textArea.classList.remove('wrong-key')
-    textArea.focus();
-
   }
 
+  // Function to handle physical keyboard input
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Only handle alphanumeric keys and space
+      if (e.key.length === 1 || e.key === 'Space') {
+        e.preventDefault();
+        handleKeyPress(e.key === 'Space' ? ' ' : e.key);
+      }
+    };
 
-
-
-  //this useEffect handles only words generation
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, visualText]);
 
   useEffect(() => {
-
     const result = genWordlist(n, letters)
     const text = shuffleArray(result, combination)
     const final_text = repeat(repetition, text)
 
-    setTimeout(() => {
+    let timer = setTimeout(() => {
       dispatch(updateVisualText(final_text));
-
     }, 100)
 
-    window.addEventListener('load', () => {
-      document.querySelector('#tex').focus();
-    })
-    console.log(n,repetition)
-
     return () => {
-      window.addEventListener('load', () => {
-        document.querySelector('#tex').focus();
-      })
+      clearTimeout(timer);
     }
   }, [n, combination, repetition, next])
-
-
 
   //handles the typing area value and event listener
   useEffect(() => {
     if (currentIndex === visualText.length) {
-      document.querySelector('#tex').value = '';
-
+      // Remove focus call since we don't have the textarea anymore
     }
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
   }, [currentIndex, visualText])
-
-
-
 
   //handles the curentindex reset once visual text changes
   useEffect(() => {
     setCurrentIndex(0)
   }, [visualText])
 
-
-
   //timer useEffect
   useEffect(() => {
-    let timer
+    let timer;
 
     if (startTime === 0) {
       handleWPMandAccuracy();
+      // Reset stats only when timer ends
+      setWPM(0);
+      setAccuracy(0);
+      setChar(0);
+      setCorrect(0);
+      setCurrentIndex(0);
       dispatch(resetStartTime(0));
-      clearInterval(timer)
+      clearInterval(timer);
     }
 
     // Timer logic for 5 minutes
     timer = setInterval(() => {
-
       dispatch(updateMinutes(Math.floor(startTime / 60)));
       dispatch(updateSeconds(startTime % 60));
-      dispatch(resetStartTime(startTime - 1))
+      dispatch(resetStartTime(startTime - 1));
 
       if (startTime === 0) {
         clearInterval(timer);
         dispatch(resetStartTime(0));
         return;
       }
-
     }, 1000);
 
     // Cleanup function to clear the timer 
     return () => clearTimeout(timer);
-
   }, [startTime])
 
   window.addEventListener('beforeunload', (e) => { console.log(e) })
@@ -272,22 +246,56 @@ const Home = () => {
       <div className="main-content">
         <div id="container">
           <h1>Typing Tutor</h1>
+          <div className="timer-controls">
+            <div className="timer-display">
+              {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+            </div>
+            <div className="timer-input-group">
+              <input 
+                type="number" 
+                min="1" 
+                max="10"
+                value={timerInput}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value) || 1;
+                  setTimerInput(Math.min(Math.max(value, 1), 10));
+                }}
+                className="timer-input"
+              />
+              <span className="timer-label">min</span>
+            </div>
+            <button 
+              className="start-button"
+              onClick={() => {
+                dispatch(resetStartTime(timerInput * 60));
+                handleReset();
+              }}
+            >
+              Start
+            </button>
+            <button 
+              className="reset-button"
+              onClick={handleReset}
+            >
+              Reset
+            </button>
+          </div>
           <button id='reset' onClick={handleReset}>Reset</button>
 
           {/* div to generate the text for typing */}
           <div id="source_container">
-            <div >
+            <div>
               <h4>Source</h4>
               <div>
-                <input type="radio" name="Source" value={2} onChange={handleSource} checked={n===2} />
+                <input type="radio" name="Source" value={2} onChange={handleSource} checked={n === 2} />
                 <p>2 Words</p>
               </div>
               <div>
-                <input type="radio" name="Source" value={3} onChange={handleSource} checked={n===3}/>
+                <input type="radio" name="Source" value={3} onChange={handleSource} checked={n === 3} />
                 <p>3 Words</p>
               </div>
               <div>
-                <input type="radio" name="Source" value={4} onChange={handleSource} checked={n===4}/>
+                <input type="radio" name="Source" value={4} onChange={handleSource} checked={n === 4} />
                 <p>4 Words</p>
               </div>
             </div>
@@ -308,35 +316,24 @@ const Home = () => {
 
           {/* container for visual and typing text */}
           <div id="text_container">
-            <div 
+            <div
               className="text-editor visual-text"
               dangerouslySetInnerHTML={{ __html: renderVisualText() }}
             ></div>
-            <div className="typing-area">
-              <textarea 
-                name="typing_text" 
-                className='text-editor' 
-                id="tex"
-                placeholder="Start typing here..."
-              ></textarea>
-              <div className="typing-indicator">
-                <span className="typing-cursor">|</span>
-              </div>
-            </div>
           </div>
         </div>
+
+        {/* Virtual Keyboard */}
+        <Keyboard
+          currentChar={visualText[currentIndex]}
+          onKeyPress={handleKeyPress}
+        />
       </div>
 
-      {/* audios for different occasion */}
-      <audio id="click-audio">
-        <source src={Click} type="audio/mpeg" />
-      </audio>
-      <audio id="clack-audio">
-        <source src={clack} type="audio/mpeg" />
-      </audio>
-      <audio id="finish-audio">
-        <source src={ding} type="audio/wav" />
-      </audio>
+      {/* Audio elements */}
+      <audio ref={clickAudioRef} src={Click}></audio>
+      <audio ref={wrongKeyRef} src={clack}></audio>
+      <audio ref={finishAudioRef} src={ding}></audio>
     </div>
   )
 }

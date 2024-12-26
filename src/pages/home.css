@@ -296,21 +296,7 @@ textarea:focus {
 }
 
 #reset {
-  padding: 0.8rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  background-color: #ff4757;
-  color: white;
-  margin: 1rem 0;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
-}
-
-#reset:hover {
-  transform: translateY(-2px);
-  background-color: #ff6b81;
+  display: none;
 }
 
 .main-content {
@@ -341,16 +327,17 @@ textarea:focus {
 
 /* Visual text styling */
 .visual-text {
-  font-family: monospace;
-  font-size: 1.2rem;
+  width: 70%;
+  margin: 20px auto;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  font-size: 2rem;
   line-height: 1.6;
-  padding: 1.5rem;
-  border-radius: 12px;
-  background: var(--secondary-dark);
-  color: inherit;
-  white-space: pre-wrap;
-  word-break: break-all;
-  min-height: 150px;
+  max-height: 120px;
+  overflow-y: auto;
+  text-align: center;
+  letter-spacing: 2px;
 }
 
 .light-mode .visual-text {
@@ -388,6 +375,103 @@ textarea:focus {
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
+}
+
+.keyboard-container {
+  margin-top: -20px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0;
+  padding: 10px;
+}
+
+.timer-input-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 2px solid var(--border-dark);
+}
+
+.timer-input {
+  width: 40px;
+  border: none;
+  background: transparent;
+  color: black;
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 2px;
+}
+
+.timer-input:focus {
+  outline: none;
+}
+
+.timer-label {
+  color: black;
+  font-size: 1rem;
+}
+
+.timer-display {
+  font-size: 1.2rem;
+  font-weight: bold;
+  min-width: 60px;
+  text-align: center;
+  color: var(--text-dark);
+}
+
+.timer-input {
+  width: 50px;
+  padding: 6px;
+  border: 2px solid var(--border-dark);
+  border-radius: 6px;
+  background: white;
+  color: black;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.timer-input:focus {
+  outline: none;
+  border-color: var(--accent-dark);
+}
+
+.start-button, .reset-button {
+  padding: 6px 15px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.start-button {
+  background: var(--accent-dark);
+  color: white;
+}
+
+.reset-button {
+  background: #ff4757;
+  color: white;
+  border: none;
+}
+
+.start-button:hover {
+  background: var(--accent-light);
+}
+
+.reset-button:hover {
+  background: #ff6b81;
 }
 
 /* media queries for responsiveness */
