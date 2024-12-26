@@ -222,6 +222,21 @@ const Home = () => {
   }, [startTime])
 
   window.addEventListener('beforeunload', (e) => { console.log(e) })
+
+  // Function to render visual text with highlighting
+  const renderVisualText = () => {
+    return visualText.split('').map((char, index) => {
+      let className = '';
+      if (index < currentIndex) {
+        className = 'typed';
+      } else if (index === currentIndex) {
+        className = 'current';
+      }
+      // Convert space to nbsp and wrap in span
+      return `<span class="${className}">${char === ' ' ? '&nbsp;' : char}</span>`;
+    }).join('');
+  };
+
   // Skeleton of the body starts form here
   return (
     <div className={`app ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
@@ -293,12 +308,10 @@ const Home = () => {
 
           {/* container for visual and typing text */}
           <div id="text_container">
-            <textarea 
-              name="visual_text" 
-              className="text-editor" 
-              disabled 
-              value={visualText}
-            ></textarea>
+            <div 
+              className="text-editor visual-text"
+              dangerouslySetInnerHTML={{ __html: renderVisualText() }}
+            ></div>
             <div className="typing-area">
               <textarea 
                 name="typing_text" 
@@ -308,7 +321,8 @@ const Home = () => {
               ></textarea>
               <div className="typing-indicator">
                 <span className="typing-cursor">|</span>
-                
+              </div>
+            </div>
           </div>
         </div>
       </div>

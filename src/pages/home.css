@@ -339,6 +339,57 @@ textarea:focus {
   gap: 1.5rem;
 }
 
+/* Visual text styling */
+.visual-text {
+  font-family: monospace;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: var(--secondary-dark);
+  color: inherit;
+  white-space: pre-wrap;
+  word-break: break-all;
+  min-height: 150px;
+}
+
+.light-mode .visual-text {
+  background: var(--secondary-light);
+}
+
+/* Character styling */
+.visual-text span {
+  transition: all 0.2s ease;
+}
+
+.visual-text span.typed {
+  color: var(--accent-light);
+  opacity: 0.7;
+}
+
+.visual-text span.current {
+  color: var(--accent-light);
+  background-color: var(--accent-light);
+  color: var(--secondary-light);
+  padding: 0 2px;
+  border-radius: 3px;
+  animation: pulse 1s infinite;
+}
+
+.dark-mode .visual-text span.typed {
+  color: var(--accent-dark);
+}
+
+.dark-mode .visual-text span.current {
+  background-color: var(--accent-dark);
+  color: var(--secondary-dark);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
 /* media queries for responsiveness */
 
 @media only screen and (max-width: 1200px) {
