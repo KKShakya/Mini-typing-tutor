@@ -27,7 +27,6 @@ This project is a typing tutor application designed to improve typing speed and 
 
 ![Screenshot 2](https://github.com/KKShakya/Mini-typing-tutor/blob/master/src/assets/image2.png)  
 
-![Screenshot 3](https://github.com/KKShakya/Mini-typing-tutor/blob/master/src/assets/image3.png)  
 
 
 ...
