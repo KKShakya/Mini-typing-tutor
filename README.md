@@ -22,10 +22,10 @@ This project is a typing tutor application designed to improve typing speed and 
 
 ## Screenshots
 
-![Screenshot 1](https://github.com/KKShakya/Mini-typing-tutor/blob/master/src/assets/image1.png)  
+![Screenshot 1](https://github.com/KKShakya/Mini-typing-tutor/blob/master/src/assets/image2.png)  
 
 
-![Screenshot 2](https://github.com/KKShakya/Mini-typing-tutor/blob/master/src/assets/image2.png)  
+![Screenshot 2](https://github.com/KKShakya/Mini-typing-tutor/blob/master/src/assets/image1.png)  
 
 
 
